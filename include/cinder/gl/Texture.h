@@ -87,12 +87,17 @@ class Texture {
 	void			setDeallocator( void(*aDeallocatorFunc)( void * ), void *aDeallocatorRefcon );
 	//! Sets the wrapping behavior when a texture coordinate falls outside the range of [0,1]. Possible values are \c GL_CLAMP, \c GL_REPEAT and \c GL_CLAMP_TO_EDGE.
 	void			setWrap( GLenum wrapS, GLenum wrapT ) { setWrapS( wrapS ); setWrapT( wrapT ); }
+	//! Sets the wrapping behavior when a texture coordinate falls outside the range of [0,1]. Possible values are \c GL_CLAMP, \c GL_REPEAT and \c GL_CLAMP_TO_EDGE.
+	void			setWrap( GLenum wrapS, GLenum wrapT, GLenum wrapR ) { setWrapS( wrapS ); setWrapT( wrapT ); setWrapR( wrapR ); }
 	/** \brief Sets the horizontal wrapping behavior when a texture coordinate falls outside the range of [0,1].
 		Possible values are \c GL_CLAMP, \c GL_REPEAT and \c GL_CLAMP_TO_EDGE. **/
 	void			setWrapS( GLenum wrapS );
 	/** \brief Sets the verical wrapping behavior when a texture coordinate falls outside the range of [0,1].
 		Possible values are \c GL_CLAMP, \c GL_REPEAT and \c GL_CLAMP_TO_EDGE. **/
 	void			setWrapT( GLenum wrapT );
+	/** \brief Sets the depth wrapping behavior when a texture coordinate falls outside the range of [0,1].
+	 Possible values are \c GL_CLAMP, \c GL_REPEAT and \c GL_CLAMP_TO_EDGE. **/
+	void			setWrapR( GLenum wrapR );
 	/** \brief Sets the filtering behavior when a texture is displayed at a lower resolution than its native resolution.
 	 * Possible values are \li \c GL_NEAREST \li \c GL_LINEAR \li \c GL_NEAREST_MIPMAP_NEAREST \li \c GL_LINEAR_MIPMAP_NEAREST \li \c GL_NEAREST_MIPMAP_LINEAR \li \c GL_LINEAR_MIPMAP_LINEAR **/
 	void			setMinFilter( GLenum minFilter );	
@@ -203,12 +208,17 @@ class Texture {
 		
 		//! Sets the wrapping behavior when a texture coordinate falls outside the range of [0,1]. Possible values are \c GL_CLAMP, \c GL_REPEAT and \c GL_CLAMP_TO_EDGE. The default is \c GL_CLAMP
 		void	setWrap( GLenum wrapS, GLenum wrapT ) { setWrapS( wrapS ); setWrapT( wrapT ); }
+		//! Sets the wrapping behavior when a texture coordinate falls outside the range of [0,1]. Possible values are \c GL_CLAMP, \c GL_REPEAT and \c GL_CLAMP_TO_EDGE. The default is \c GL_CLAMP
+		void	setWrap( GLenum wrapS, GLenum wrapT, GLenum wrapR ) { setWrapS( wrapS ); setWrapT( wrapT ); setWrapR( wrapR ); }
 		/** \brief Sets the horizontal wrapping behavior when a texture coordinate falls outside the range of [0,1].
 			Possible values are \c GL_CLAMP, \c GL_REPEAT and \c GL_CLAMP_TO_EDGE. The default is \c GL_CLAMP_TO_EDGE **/
 		void	setWrapS( GLenum wrapS ) { mWrapS = wrapS; }
 		/** \brief Sets the verical wrapping behavior when a texture coordinate falls outside the range of [0,1].
 			Possible values are \c GL_CLAMP, \c GL_REPEAT and \c GL_CLAMP_TO_EDGE. The default is \c GL_CLAMP_TO_EDGE. **/
 		void	setWrapT( GLenum wrapT ) { mWrapT = wrapT; }
+		/** \brief Sets the depth wrapping behavior when a texture coordinate falls outside the range of [0,1].
+		 Possible values are \c GL_CLAMP, \c GL_REPEAT and \c GL_CLAMP_TO_EDGE. The default is \c GL_CLAMP_TO_EDGE. **/
+		void	setWrapR( GLenum wrapR ) { mWrapR = wrapR; }
 		/** \brief Sets the filtering behavior when a texture is displayed at a lower resolution than its native resolution. Default is \c GL_LINEAR
 		 * Possible values are \li \c GL_NEAREST \li \c GL_LINEAR \li \c GL_NEAREST_MIPMAP_NEAREST \li \c GL_LINEAR_MIPMAP_NEAREST \li \c GL_NEAREST_MIPMAP_LINEAR \li \c GL_LINEAR_MIPMAP_LINEAR **/
 		void	setMinFilter( GLenum minFilter ) { mMinFilter = minFilter; }
@@ -230,6 +240,8 @@ class Texture {
 		GLenum	getWrapS() const { return mWrapS; }
 		//! Returns the vertical wrapping behavior for the texture coordinates.
 		GLenum	getWrapT() const { return mWrapT; }
+		//! Returns the depth wrapping behavior for the texture coordinates.
+		GLenum	getWrapR() const { return mWrapR; }
 		//! Returns the texture minifying function, which is used whenever the pixel being textured maps to an area greater than one texture element.
 		GLenum	getMinFilter() const { return mMinFilter; }
 		//! Returns the texture magnifying function, which is used whenever the pixel being textured maps to an area less than or equal to one texture element.
@@ -237,7 +249,7 @@ class Texture {
 		
 	  protected:
 		GLenum			mTarget;
-		GLenum			mWrapS, mWrapT;
+		GLenum			mWrapS, mWrapT, mWrapR;
 		GLenum			mMinFilter, mMagFilter;
 		bool			mMipmapping;
 		GLint			mInternalFormat;

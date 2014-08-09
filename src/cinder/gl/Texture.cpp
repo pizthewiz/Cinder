@@ -66,6 +66,7 @@ Texture::Format::Format()
 	mTarget = GL_TEXTURE_2D;
 	mWrapS = GL_CLAMP_TO_EDGE;
 	mWrapT = GL_CLAMP_TO_EDGE;
+	mWrapR = GL_CLAMP_TO_EDGE;
 	mMinFilter = GL_LINEAR;
 	mMagFilter = GL_LINEAR;
 	mMipmapping = false;
@@ -383,7 +384,10 @@ void Texture::init( ImageSourceRef imageSource, const Format &format )
 
 	glTexParameteri( mObj->mTarget, GL_TEXTURE_WRAP_S, format.mWrapS );
 	glTexParameteri( mObj->mTarget, GL_TEXTURE_WRAP_T, format.mWrapT );
-	glTexParameteri( mObj->mTarget, GL_TEXTURE_MIN_FILTER, format.mMinFilter );	
+#if ! defined( CINDER_GLES )
+	glTexParameteri( mObj->mTarget, GL_TEXTURE_WRAP_R, format.mWrapR );
+#endif
+	glTexParameteri( mObj->mTarget, GL_TEXTURE_MIN_FILTER, format.mMinFilter );
 	glTexParameteri( mObj->mTarget, GL_TEXTURE_MAG_FILTER, format.mMagFilter );
 	if( format.mMipmapping )
 		glTexParameteri( mObj->mTarget, GL_GENERATE_MIPMAP, GL_TRUE );
@@ -399,7 +403,18 @@ void Texture::init( ImageSourceRef imageSource, const Format &format )
 	if( imageSource->getDataType() == ImageIo::UINT8 ) {
 		shared_ptr<ImageTargetGLTexture<uint8_t> > target = ImageTargetGLTexture<uint8_t>::createRef( this, channelOrder, isGray, imageSource->hasAlpha() );
 		imageSource->load( target );
-		glTexImage2D( mObj->mTarget, 0, mObj->mInternalFormat, mObj->mWidth, mObj->mHeight, 0, dataFormat, GL_UNSIGNED_BYTE, target->getData() );
+#if ! defined( CINDER_GLES )
+		if( mObj->mTarget == GL_TEXTURE_3D ) {
+			int size = imageSource->getWidth();
+			int level = round( pow( size, 1.0f / 3.0f ) );
+			int edge = level * level;
+			glTexImage3D( mObj->mTarget, 0, mObj->mInternalFormat, edge, edge, edge, 0, dataFormat, GL_UNSIGNED_BYTE, target->getData() );
+		} else {
+#endif
+			glTexImage2D( mObj->mTarget, 0, mObj->mInternalFormat, mObj->mWidth, mObj->mHeight, 0, dataFormat, GL_UNSIGNED_BYTE, target->getData() );
+#if ! defined( CINDER_GLES )
+		}
+#endif
 	}
 	else if( imageSource->getDataType() == ImageIo::UINT16 ) {
 		shared_ptr<ImageTargetGLTexture<uint16_t> > target = ImageTargetGLTexture<uint16_t>::createRef( this, channelOrder, isGray, imageSource->hasAlpha() );
